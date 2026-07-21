@@ -232,5 +232,54 @@
       }
     ],
     "instructions": "Lessare il riso\nTaglia alla julienne tutte le verdure ed il tofu → metti in padella e condisci con spezie → fuoco alto per 5-10 minuti"
+  },
+  {
+    "title": "Focaccine di ceci al rosmarino",
+    "category": "Spuntini",
+    "link": "",
+    "baseServings": 12,
+    "ingredients": [
+      {
+        "qty": 100,
+        "unit": "g",
+        "name": "Farina di ceci"
+      },
+      {
+        "qty": 100,
+        "unit": "g",
+        "name": "Farina 0"
+      },
+      {
+        "qty": 8,
+        "unit": "g",
+        "name": "Lievito di birra fresco"
+      },
+      {
+        "qty": 0.5,
+        "unit": "cucchiaino/i",
+        "name": "Zucchero"
+      },
+      {
+        "qty": 100,
+        "unit": "g",
+        "name": "Acqua"
+      },
+      {
+        "qty": 2,
+        "unit": "cucchiaio/i",
+        "name": "Olio"
+      },
+      {
+        "qty": 0,
+        "unit": "",
+        "name": "Sale"
+      },
+      {
+        "qty": 0,
+        "unit": "",
+        "name": "Rosmarino"
+      }
+    ],
+    "instructions": "Per attivare il lievito, metti in una ciotola 40g di acqua e lo zucchero e mescolare\nIn un’altra ciotola, unire le farine, il lievito attivato, il rosmarino tritato, sale e il resto dell’acqua (60g) → impasta con un cucchiaio e aggiungi l’olio\nImpastate energicamente con le mani per 5 minuti e fate lievitare l’impasto nella ciotola per almeno 2h in un luogo caldo e asciutto (coperto da un canovaccio nel forno con luce accesa)\nDividere l’impasto in palline e mettile su una teglia con carta da forno (usa cucchiaio per dare forma), fare delle piccole pressioni col dito e condite con altro rosmarino tritato e qualche chicco di sale grosso\nCuocere in forno statico per 220° per 10 minuti"
   }
 ]
