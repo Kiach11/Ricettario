@@ -388,5 +388,59 @@
       }
     ],
     "instructions": "-"
+  },
+  {
+    "title": "Muffin veg al cioccolato",
+    "category": "Dolci",
+    "link": "https://www.fattoincasadabenedetta.it/ricetta/muffin-vegani-al-cioccolato/",
+    "baseServings": 10,
+    "ingredients": [
+      {
+        "qty": 250,
+        "unit": "ml",
+        "name": "Latte vegetale"
+      },
+      {
+        "qty": 5,
+        "unit": "g",
+        "name": "Estratto vaniglia"
+      },
+      {
+        "qty": 80,
+        "unit": "ml",
+        "name": "Olio di semi"
+      },
+      {
+        "qty": 250,
+        "unit": "g",
+        "name": "Farina 00 / Farina d'avena"
+      },
+      {
+        "qty": 30,
+        "unit": "g",
+        "name": "Cacao amaro"
+      },
+      {
+        "qty": 150,
+        "unit": "g",
+        "name": "Zucchero"
+      },
+      {
+        "qty": 2,
+        "unit": "cucchiaini",
+        "name": "Lievito per dolci"
+      },
+      {
+        "qty": 1,
+        "unit": "pizzico",
+        "name": "Sale"
+      },
+      {
+        "qty": 40,
+        "unit": "g",
+        "name": "gocce di cioccolato"
+      }
+    ],
+    "instructions": "-"
   }
 ]
