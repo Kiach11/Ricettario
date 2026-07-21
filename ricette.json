@@ -37,5 +37,49 @@
       }
     ],
     "instructions": "Metti prima il latte, poi olio di semi e olio d'oliva, infine sale, succo di limone e curry nel barattolo del frullatore a immersione, poi frulla tutto. \nNB.: inizia stando in fondo e piano piano incorpora l'olio"
+  },
+  {
+    "title": "Salsa Tahina al limone",
+    "category": "Salse/Condimenti",
+    "link": "",
+    "baseServings": 1,
+    "ingredients": [
+      {
+        "qty": 0,
+        "unit": "",
+        "name": "Tahina"
+      },
+      {
+        "qty": 0,
+        "unit": "",
+        "name": "Succo limone"
+      },
+      {
+        "qty": 0,
+        "unit": "",
+        "name": "Pizzico di sale"
+      },
+      {
+        "qty": 0,
+        "unit": "",
+        "name": "Olio"
+      },
+      {
+        "qty": 0,
+        "unit": "",
+        "name": "Acqua"
+      },
+      {
+        "qty": 0,
+        "unit": "",
+        "name": "Aceto balsamico"
+      },
+      {
+        "qty": 0,
+        "unit": "",
+        "name": "Spezie a piacere"
+      }
+    ],
+    "instructions": "La consistenza deve essere piuttosto liquida ma non troppo"
   }
 ]
