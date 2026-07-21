@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#e67e22">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>Il Mio Ricettario</title>
+  <style>
+    :root {
+      --primary: #e67e22;
+      --bg: #f8f9fa;
+      --card-bg: #ffffff;
+      --text: #2c3e50;
+      --border: #e2e8f0;
+    }
+
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: var(--bg); color: var(--text); margin: 0; padding: 16px; display: flex; justify-content: center; }
+    .app-container { width: 100%; max-width: 600px; }
+
+    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    h1 { font-size: 1.5rem; margin: 0; color: var(--primary); }
+
+    .btn { background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    .btn-secondary { background: #718096; }
+    .btn-danger { background: #e53e3e; }
+
+    .card { background: var(--card-bg); border-radius: 12px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid var(--border); cursor: pointer; }
+    .card-header { display: flex; justify-content: space-between; align-items: center; }
+    .tag { background: #feebc8; color: #c05621; padding: 4px 8px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; }
+
+    .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; padding: 16px; z-index: 100; }
+    .modal-content { background: white; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; border-radius: 12px; padding: 20px; }
+
+    input, textarea, select { width: 100%; padding: 10px; margin: 6px 0 16px 0; border: 1px solid var(--border); border-radius: 6px; }
+    .portion-controls { display: flex; align-items: center; gap: 10px; background: #edf2f7; padding: 10px; border-radius: 8px; margin: 10px 0; }
+    .portion-controls input { width: 70px; margin: 0; text-align: center; }
+  </style>
+</head>
+<body>
+
+<div class="app-container">
+  <header>
+    <h1>📖 Ricettario</h1>
+    <button class="btn" onclick="openModal()">+ Nuova</button>
+  </header>
+
+  <div style="margin-bottom: 15px; display: flex; gap: 10px;">
+    <button class="btn btn-secondary" onclick="exportData()" style="font-size: 0.8rem; padding: 6px 12px;">Esporta JSON</button>
+    <input type="file" id="importFile" onchange="importData(event)" style="display:none">
+    <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()" style="font-size: 0.8rem; padding: 6px 12px;">Importa JSON</button>
+  </div>
+
+  <div id="recipeList"></div>
+</div>
+
+<!-- Modal Form -->
+<div class="modal" id="recipeModal">
+  <div class="modal-content">
+    <h2 id="modalTitle">Nuova Ricetta</h2>
+    <form id="recipeForm" onsubmit="saveRecipe(event)">
+      <input type="hidden" id="recipeId">
+      
+      <label>Nome Ricetta</label>
+      <input type="text" id="title" required>
+
+      <label>Categoria</label>
+      <input type="text" id="category" placeholder="es. Primi, Dolci, Vegetariano" required>
+
+      <label>Link Origine (Opzionale)</label>
+      <input type="url" id="link" placeholder="https://...">
+
+      <label>Porzioni Base</label>
+      <input type="number" id="baseServings" value="4" min="1" required>
+
+      <label>Ingredienti (uno per riga: Quantità | Unità | Nome)</label>
+      <textarea id="ingredients" rows="4" placeholder="200 | g | Farina&#10;2 | | Uova&#10;100 | ml | Latte" required></textarea>
+
+      <label>Procedimento</label>
+      <textarea id="instructions" rows="4" required></textarea>
+
+      <div style="display: flex; gap: 10px; justify-content: flex-end;">
+        <button type="button" class="btn btn-secondary" onclick="closeModal()">Annulla</button>
+        <button type="submit" class="btn">Salva</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Visualizzazione Dettagliata -->
+<div class="modal" id="viewModal">
+  <div class="modal-content">
+    <div style="display:flex; justify-content:space-between; align-items:start;">
+      <h2 id="viewTitle" style="margin:0;"></h2>
+      <span class="tag" id="viewCategory"></span>
+    </div>
+    <p id="viewLink" style="margin: 5px 0; font-size: 0.9rem;"></p>
+
+    <div class="portion-controls">
+      <span>Porzioni desiderate:</span>
+      <input type="number" id="currentServings" min="1" onchange="updateScaledIngredients()">
+    </div>
+
+    <h3>Ingredienti</h3>
+    <ul id="viewIngredients"></ul>
+
+    <h3>Procedimento</h3>
+    <p id="viewInstructions" style="white-space: pre-line;"></p>
+
+    <div style="display: flex; gap: 10px; justify-content: space-between; margin-top: 20px;">
+      <button class="btn btn-danger" id="deleteBtn">Elimina</button>
+      <button class="btn btn-secondary" onclick="closeViewModal()">Chiudi</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  let recipes = JSON.parse(localStorage.getItem('my_recipes')) || [];
+  let currentActiveRecipe = null;
+
+  function saveStorage() {
+    localStorage.setItem('my_recipes', JSON.stringify(recipes));
+    renderRecipes();
+  }
+
+  function renderRecipes() {
+    const list = document.getElementById('recipeList');
+    list.innerHTML = '';
+    recipes.forEach((r, index) => {
+      list.innerHTML += `
+        <div class="card" onclick="viewRecipe(${index})">
+          <div class="card-header">
+            <strong>${r.title}</strong>
+            <span class="tag">${r.category}</span>
+          </div>
+          <small style="color:#718096; display:block; margin-top:5px;">Porzioni base: ${r.baseServings}</small>
+        </div>
+      `;
+    });
+  }
+
+  function openModal() {
+    document.getElementById('recipeForm').reset();
+    document.getElementById('recipeId').value = '';
+    document.getElementById('modalTitle').innerText = 'Nuova Ricetta';
+    document.getElementById('recipeModal').style.display = 'flex';
+  }
+
+  function closeModal() {
+    document.getElementById('recipeModal').style.display = 'none';
+  }
+
+  function closeViewModal() {
+    document.getElementById('viewModal').style.display = 'none';
+  }
+
+  function saveRecipe(e) {
+    e.preventDefault();
+    const id = document.getElementById('recipeId').value;
+    const rawIngredients = document.getElementById('ingredients').value.split('\n').filter(i => i.trim() !== '');
+    
+    const parsedIngredients = rawIngredients.map(line => {
+      const parts = line.split('|').map(p => p.trim());
+      return {
+        qty: parseFloat(parts[0]) || 0,
+        unit: parts[1] || '',
+        name: parts[2] || parts[0]
+      };
+    });
+
+    const newRecipe = {
+      title: document.getElementById('title').value,
+      category: document.getElementById('category').value,
+      link: document.getElementById('link').value,
+      baseServings: parseInt(document.getElementById('baseServings').value),
+      ingredients: parsedIngredients,
+      instructions: document.getElementById('instructions').value
+    };
+
+    if (id !== '') {
+      recipes[id] = newRecipe;
+    } else {
+      recipes.push(newRecipe);
+    }
+
+    saveStorage();
+    closeModal();
+  }
+
+  function viewRecipe(index) {
+    currentActiveRecipe = recipes[index];
+    document.getElementById('viewTitle').innerText = currentActiveRecipe.title;
+    document.getElementById('viewCategory').innerText = currentActiveRecipe.category;
+    document.getElementById('currentServings').value = currentActiveRecipe.baseServings;
+    
+    const linkEl = document.getElementById('viewLink');
+    if(currentActiveRecipe.link) {
+      linkEl.innerHTML = `<a href="${currentActiveRecipe.link}" target="_blank">🔗 Apri link ricetta originale</a>`;
+    } else {
+      linkEl.innerHTML = '';
+    }
+
+    document.getElementById('viewInstructions').innerText = currentActiveRecipe.instructions;
+    document.getElementById('deleteBtn').onclick = () => { deleteRecipe(index); };
+    
+    updateScaledIngredients();
+    document.getElementById('viewModal').style.display = 'flex';
+  }
+
+  function updateScaledIngredients() {
+    if (!currentActiveRecipe) return;
+    const targetServings = parseFloat(document.getElementById('currentServings').value) || 1;
+    const scaleFactor = targetServings / currentActiveRecipe.baseServings;
+
+    const list = document.getElementById('viewIngredients');
+    list.innerHTML = '';
+    
+    currentActiveRecipe.ingredients.forEach(ing => {
+      const scaledQty = ing.qty ? (ing.qty * scaleFactor).toFixed(1).replace(/\.0$/, '') : '';
+      list.innerHTML += `<li><strong>${scaledQty} ${ing.unit}</strong> ${ing.name}</li>`;
+    });
+  }
+
+  function deleteRecipe(index) {
+    if (confirm('Vuoi davvero eliminare questa ricetta?')) {
+      recipes.splice(index, 1);
+      saveStorage();
+      closeViewModal();
+    }
+  }
+
+  function exportData() {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(recipes));
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute("href", dataStr);
+    downloadAnchor.setAttribute("download", "ricettario_backup.json");
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+  }
+
+  function importData(e) {
+    const fileReader = new FileReader();
+    fileReader.onload = function (event) {
+      try {
+        const importedRecipes = JSON.parse(event.target.result);
+        if (Array.isArray(importedRecipes)) {
+          recipes = importedRecipes;
+          saveStorage();
+          alert('Ricette importate con successo!');
+        }
+      } catch (err) {
+        alert('File non valido.');
+      }
+    };
+    fileReader.readAsText(e.target.files[0]);
+  }
+
+  renderRecipes();
+</script>
+</body>
+</html>
