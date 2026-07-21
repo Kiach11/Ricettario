@@ -525,5 +525,39 @@
       }
     ],
     "instructions": "-"
+  },
+  {
+    "title": "Cotolette/Straccetti di ceci",
+    "category": "Primi piatti",
+    "link": "https://www.instagram.com/reel/DJKBpCCssYS/",
+    "baseServings": 1,
+    "ingredients": [
+      {
+        "qty": 150,
+        "unit": "g",
+        "name": "Acqua"
+      },
+      {
+        "qty": 20,
+        "unit": "g",
+        "name": "Olio"
+      },
+      {
+        "qty": 90,
+        "unit": "g",
+        "name": "Farina di ceci"
+      },
+      {
+        "qty": 0,
+        "unit": "",
+        "name": "Sale"
+      },
+      {
+        "qty": 0,
+        "unit": "",
+        "name": "Spezie"
+      }
+    ],
+    "instructions": "Fa bollire l'acqua in padella poi aggiungere il resto (prepara già olio in una tazzina e farina di ceci + spezie in un piatto o ciotola già mescolati).\nMischiare abbassando un po' il fuoco fino a che non è più appiccicoso. Finire di formare un panetto secondo esigenze e lasciar raffreddare. Poi è pronto per essere ripassato in padella o in friggitrice ad aria."
   }
 ]
