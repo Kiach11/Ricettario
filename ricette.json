@@ -354,5 +354,39 @@
       }
     ],
     "instructions": "Mescolare e lasciare riposare per almeno 15 minuti"
+  },
+  {
+    "title": "Besciamella veg",
+    "category": "Salse/Condimenti",
+    "link": "https://ricette.giallozafferano.it/Besciamella-senza-burro.html",
+    "baseServings": 1,
+    "ingredients": [
+      {
+        "qty": 1,
+        "unit": "L",
+        "name": "Latte di soia senza zucchero"
+      },
+      {
+        "qty": 100,
+        "unit": "g",
+        "name": "Farina 00"
+      },
+      {
+        "qty": 90,
+        "unit": "g",
+        "name": "Olio di semi"
+      },
+      {
+        "qty": 0,
+        "unit": "",
+        "name": "Noce moscata"
+      },
+      {
+        "qty": 0,
+        "unit": "",
+        "name": "Sale"
+      }
+    ],
+    "instructions": "-"
   }
 ]
