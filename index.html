@@ -67,7 +67,6 @@
     <button class="btn btn-secondary btn-sm" onclick="loadRecipesFromGitHub()">🔄 Ricarica da Git</button>
   </div>
 
-  <!-- Filtro Categoria -->
   <div class="filter-bar">
     <label for="filterCategory">📁 Categoria:</label>
     <select id="filterCategory" style="margin: 0;" onchange="renderRecipes()">
@@ -89,7 +88,6 @@
       <input type="text" id="title" required>
 
       <label>Categoria</label>
-      <!-- Datalist per i suggerimenti automatici -->
       <input type="text" id="category" list="categorySuggestions" placeholder="es. Primi, Dolci, Vegetariano" required autocomplete="off">
       <datalist id="categorySuggestions"></datalist>
 
@@ -100,7 +98,7 @@
       <input type="number" id="baseServings" value="4" min="1" required>
 
       <label>Ingredienti (uno per riga: Quantità | Unità | Nome)</label>
-      <textarea id="ingredients" rows="4" placeholder="200 | g | Farina&#10;2 | | Uova&#10;100 | ml | Latte" required></textarea>
+      <textarea id="ingredients" rows="4" placeholder="200 | g | Farina&#10;2 | | Uova&#10;0.5 | g | Sale" required></textarea>
 
       <label>Procedimento</label>
       <textarea id="instructions" rows="4" required></textarea>
@@ -133,9 +131,12 @@
     <h3>Procedimento</h3>
     <p id="viewInstructions" style="white-space: pre-line;"></p>
 
-    <div style="display: flex; gap: 10px; justify-content: space-between; margin-top: 20px;">
+    <div style="display: flex; gap: 10px; justify-content: space-between; align-items: center; margin-top: 20px;">
       <button class="btn btn-danger" id="deleteBtn">Elimina</button>
-      <button class="btn btn-secondary" onclick="closeViewModal()">Chiudi</button>
+      <div style="display: flex; gap: 8px;">
+        <button class="btn btn-secondary" onclick="editCurrentRecipe()">✏️ Modifica</button>
+        <button class="btn btn-secondary" onclick="closeViewModal()">Chiudi</button>
+      </div>
     </div>
   </div>
 </div>
@@ -148,7 +149,7 @@
 
   let recipes = [];
   let currentFileSha = null;
-  let currentActiveRecipe = null;
+  let currentActiveIndex = null;
 
   function getToken() {
     return localStorage.getItem('gh_pat') || '';
@@ -215,17 +216,14 @@
   }
 
   function updateCategoryUI() {
-    // Estrae tutte le categorie uniche e le ordina alfabeticamente
     const categories = [...new Set(recipes.map(r => r.category ? r.category.trim() : '').filter(Boolean))].sort();
 
-    // 1. Aggiorna i suggerimenti nel form di inserimento
     const datalist = document.getElementById('categorySuggestions');
     datalist.innerHTML = '';
     categories.forEach(cat => {
       datalist.innerHTML += `<option value="${cat}">`;
     });
 
-    // 2. Aggiorna il filtro in alto
     const filterSelect = document.getElementById('filterCategory');
     const currentValue = filterSelect.value;
     filterSelect.innerHTML = '<option value="ALL">Tutte le categorie</option>';
@@ -233,7 +231,6 @@
       filterSelect.innerHTML += `<option value="${cat}">${cat}</option>`;
     });
 
-    // Mantiene la selezione se esiste ancora
     if (categories.includes(currentValue)) {
       filterSelect.value = currentValue;
     } else {
@@ -246,7 +243,6 @@
     const selectedCategory = document.getElementById('filterCategory').value;
     list.innerHTML = '';
 
-    // Mantiene l'indice originale anche se la lista viene filtrata
     const filteredItems = recipes
       .map((recipe, index) => ({ recipe, index }))
       .filter(item => selectedCategory === 'ALL' || item.recipe.category === selectedCategory);
@@ -387,34 +383,57 @@
   }
 
   function viewRecipe(index) {
-    currentActiveRecipe = recipes[index];
-    document.getElementById('viewTitle').innerText = currentActiveRecipe.title;
-    document.getElementById('viewCategory').innerText = currentActiveRecipe.category;
-    document.getElementById('currentServings').value = currentActiveRecipe.baseServings;
+    currentActiveIndex = index;
+    const recipe = recipes[index];
+    document.getElementById('viewTitle').innerText = recipe.title;
+    document.getElementById('viewCategory').innerText = recipe.category;
+    document.getElementById('currentServings').value = recipe.baseServings;
     
     const linkEl = document.getElementById('viewLink');
-    if(currentActiveRecipe.link) {
-      linkEl.innerHTML = `<a href="${currentActiveRecipe.link}" target="_blank">🔗 Apri link ricetta originale</a>`;
+    if(recipe.link) {
+      linkEl.innerHTML = `<a href="${recipe.link}" target="_blank">🔗 Apri link ricetta originale</a>`;
     } else {
       linkEl.innerHTML = '';
     }
 
-    document.getElementById('viewInstructions').innerText = currentActiveRecipe.instructions;
+    document.getElementById('viewInstructions').innerText = recipe.instructions;
     document.getElementById('deleteBtn').onclick = () => { deleteRecipe(index); };
     
     updateScaledIngredients();
     document.getElementById('viewModal').style.display = 'flex';
   }
 
+  function editCurrentRecipe() {
+    if (currentActiveIndex === null) return;
+    const recipe = recipes[currentActiveIndex];
+    closeViewModal();
+
+    document.getElementById('modalTitle').innerText = 'Modifica Ricetta';
+    document.getElementById('recipeId').value = currentActiveIndex;
+    document.getElementById('title').value = recipe.title;
+    document.getElementById('category').value = recipe.category;
+    document.getElementById('link').value = recipe.link || '';
+    document.getElementById('baseServings').value = recipe.baseServings;
+
+    const ingText = recipe.ingredients
+      .map(i => `${i.qty} | ${i.unit} | ${i.name}`)
+      .join('\n');
+    document.getElementById('ingredients').value = ingText;
+
+    document.getElementById('instructions').value = recipe.instructions;
+    document.getElementById('recipeModal').style.display = 'flex';
+  }
+
   function updateScaledIngredients() {
-    if (!currentActiveRecipe) return;
+    if (currentActiveIndex === null) return;
+    const recipe = recipes[currentActiveIndex];
     const targetServings = parseFloat(document.getElementById('currentServings').value) || 1;
-    const scaleFactor = targetServings / currentActiveRecipe.baseServings;
+    const scaleFactor = targetServings / recipe.baseServings;
 
     const list = document.getElementById('viewIngredients');
     list.innerHTML = '';
     
-    currentActiveRecipe.ingredients.forEach(ing => {
+    recipe.ingredients.forEach(ing => {
       const scaledQty = ing.qty ? (ing.qty * scaleFactor).toFixed(1).replace(/\.0$/, '') : '';
       list.innerHTML += `<li><strong>${scaledQty} ${ing.unit}</strong> ${ing.name}</li>`;
     });
