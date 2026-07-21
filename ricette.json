@@ -81,5 +81,34 @@
       }
     ],
     "instructions": "La consistenza deve essere piuttosto liquida ma non troppo"
+  },
+  {
+    "title": "Farinata di ceci",
+    "category": "Primi piatti",
+    "link": "",
+    "baseServings": 1,
+    "ingredients": [
+      {
+        "qty": 80,
+        "unit": "g",
+        "name": "Farina di ceci"
+      },
+      {
+        "qty": 180,
+        "unit": "g",
+        "name": "Acqua"
+      },
+      {
+        "qty": 1,
+        "unit": "cucchiaio/i",
+        "name": "Olio"
+      },
+      {
+        "qty": 0,
+        "unit": "",
+        "name": "spezie: sale, prezzemolo, pepe"
+      }
+    ],
+    "instructions": "In una ciotola prepara la pastella con farina di ceci, sale, acqua e mezzo cucchiaio di olio. Mescola energicamente con una frusta (togli eventualmente la schiumetta che si forma in superficie)\nVersa la pastella nella teglia oliata o con carta forno, condisci sopra con mezzo cucchiaio di olio e cuoci in forno statico a 220° per 20/30 minuti\nAlla pastella si possono aggiungere tutte le verdure e erbe aromatiche (cipolla, rosmarino, zucchine, patate, pomodorini…)"
   }
 ]
