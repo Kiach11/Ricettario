@@ -559,5 +559,39 @@
       }
     ],
     "instructions": "Fa bollire l'acqua in padella poi aggiungere il resto (prepara già olio in una tazzina e farina di ceci + spezie in un piatto o ciotola già mescolati).\nMischiare abbassando un po' il fuoco fino a che non è più appiccicoso. Finire di formare un panetto secondo esigenze e lasciar raffreddare. Poi è pronto per essere ripassato in padella o in friggitrice ad aria."
+  },
+  {
+    "title": "Polpette di lenticchie 2 ",
+    "category": "Primi piatti",
+    "link": "https://www.fattoincasadabenedetta.it/ricetta/polpette-di-lenticchie/",
+    "baseServings": 4,
+    "ingredients": [
+      {
+        "qty": 400,
+        "unit": "g",
+        "name": "Lenticchie"
+      },
+      {
+        "qty": 48,
+        "unit": "g",
+        "name": "Pan grattato"
+      },
+      {
+        "qty": 0,
+        "unit": "",
+        "name": "Olio"
+      },
+      {
+        "qty": 0,
+        "unit": "",
+        "name": "Sale"
+      },
+      {
+        "qty": 0,
+        "unit": "",
+        "name": "Spezie"
+      }
+    ],
+    "instructions": "-"
   }
 ]
