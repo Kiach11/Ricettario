@@ -442,5 +442,39 @@
       }
     ],
     "instructions": "-"
+  },
+  {
+    "title": "Polpette di lenticchie",
+    "category": "Primi piatti",
+    "link": "https://cookpad.com/it/ricette/25029273",
+    "baseServings": 2,
+    "ingredients": [
+      {
+        "qty": 400,
+        "unit": "g",
+        "name": "Lenticchie lessate salate"
+      },
+      {
+        "qty": 70,
+        "unit": "g",
+        "name": "Farina di ceci"
+      },
+      {
+        "qty": 1,
+        "unit": "cucchiaino/i",
+        "name": "Senape"
+      },
+      {
+        "qty": 0,
+        "unit": "",
+        "name": "Pan grattato"
+      },
+      {
+        "qty": 0,
+        "unit": "",
+        "name": "Olio in padella"
+      }
+    ],
+    "instructions": "Frullare le lenticchie, unire la farina di ceci, la senape.\nAiutandosi con il pane grattugiato formare delle palline.\nIn una padella mettere abbondante olio e cuocere le polpette fino a quando non sono ben rosolate da tutte le parti."
   }
 ]
