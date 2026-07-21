@@ -193,5 +193,44 @@
       }
     ],
     "instructions": "Cuoci spinaci surgelati, scolare bene e far raffreddare un po'\nLava e scola bene ceci\nFrulla tutto\nSi possono fare 2 frullate diverse in caso di frullatore piccolo, prima ceci + pan grattato + sale/olio/spezie poi spinaci. Dopo in una ciotola mischia bene con forchetta/cucchiaio e/o mani"
+  },
+  {
+    "title": "Riso cinese alla julienne",
+    "category": "Primi piatti",
+    "link": "",
+    "baseServings": 4,
+    "ingredients": [
+      {
+        "qty": 360,
+        "unit": "g",
+        "name": "Riso"
+      },
+      {
+        "qty": 1,
+        "unit": "",
+        "name": "Zucchina/e"
+      },
+      {
+        "qty": 1,
+        "unit": "",
+        "name": "Carota/e"
+      },
+      {
+        "qty": 1,
+        "unit": "",
+        "name": "Cipolla/e"
+      },
+      {
+        "qty": 4,
+        "unit": "panetto/i",
+        "name": "Tofu"
+      },
+      {
+        "qty": 0,
+        "unit": "",
+        "name": "Spezie: le, olio, concentrato di pomodoro, curcuma, salsa di soia, pepe"
+      }
+    ],
+    "instructions": "Lessare il riso\nTaglia alla julienne tutte le verdure ed il tofu → metti in padella e condisci con spezie → fuoco alto per 5-10 minuti"
   }
 ]
