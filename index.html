@@ -4,8 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#e67e22">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <title>Il Mio Ricettario</title>
   <style>
     :root {
@@ -20,12 +18,18 @@
     body { background-color: var(--bg); color: var(--text); margin: 0; padding: 16px; display: flex; justify-content: center; }
     .app-container { width: 100%; max-width: 600px; }
 
-    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
     h1 { font-size: 1.5rem; margin: 0; color: var(--primary); }
 
+    .top-actions { display: flex; gap: 8px; margin-bottom: 15px; }
     .btn { background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; }
     .btn-secondary { background: #718096; }
     .btn-danger { background: #e53e3e; }
+    .btn-sm { padding: 6px 12px; font-size: 0.85rem; }
+
+    .status-bar { background: #e2e8f0; padding: 8px 12px; border-radius: 8px; font-size: 0.85rem; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+    .status-online { color: #2f855a; font-weight: bold; }
+    .status-offline { color: #c53030; font-weight: bold; }
 
     .card { background: var(--card-bg); border-radius: 12px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid var(--border); cursor: pointer; }
     .card-header { display: flex; justify-content: space-between; align-items: center; }
@@ -37,9 +41,13 @@
     input, textarea, select { width: 100%; padding: 10px; margin: 6px 0 16px 0; border: 1px solid var(--border); border-radius: 6px; }
     .portion-controls { display: flex; align-items: center; gap: 10px; background: #edf2f7; padding: 10px; border-radius: 8px; margin: 10px 0; }
     .portion-controls input { width: 70px; margin: 0; text-align: center; }
+    
+    .loading-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(255,255,255,0.8); z-index: 200; justify-content: center; align-items: center; font-weight: bold; color: var(--primary); }
   </style>
 </head>
 <body>
+
+<div class="loading-overlay" id="loading">Sincronizzazione con GitHub...</div>
 
 <div class="app-container">
   <header>
@@ -47,10 +55,13 @@
     <button class="btn" onclick="openModal()">+ Nuova</button>
   </header>
 
-  <div style="margin-bottom: 15px; display: flex; gap: 10px;">
-    <button class="btn btn-secondary" onclick="exportData()" style="font-size: 0.8rem; padding: 6px 12px;">Esporta JSON</button>
-    <input type="file" id="importFile" onchange="importData(event)" style="display:none">
-    <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()" style="font-size: 0.8rem; padding: 6px 12px;">Importa JSON</button>
+  <div class="status-bar">
+    <span id="syncStatus">Caricamento...</span>
+    <button class="btn btn-secondary btn-sm" onclick="promptToken()">🔑 Token GitHub</button>
+  </div>
+
+  <div class="top-actions">
+    <button class="btn btn-secondary btn-sm" onclick="loadRecipesFromGitHub()">🔄 Ricarica da Git</button>
   </div>
 
   <div id="recipeList"></div>
@@ -83,7 +94,7 @@
 
       <div style="display: flex; gap: 10px; justify-content: flex-end;">
         <button type="button" class="btn btn-secondary" onclick="closeModal()">Annulla</button>
-        <button type="submit" class="btn">Salva</button>
+        <button type="submit" class="btn">Salva su Git</button>
       </div>
     </form>
   </div>
@@ -117,17 +128,145 @@
 </div>
 
 <script>
-  let recipes = JSON.parse(localStorage.getItem('my_recipes')) || [];
+  const REPO_OWNER = 'kiach11';
+  const REPO_NAME = 'Ricettario';
+  const FILE_PATH = 'ricette.json';
+  const API_URL = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
+
+  let recipes = [];
+  let currentFileSha = null;
   let currentActiveRecipe = null;
 
-  function saveStorage() {
-    localStorage.setItem('my_recipes', JSON.stringify(recipes));
-    renderRecipes();
+  function getToken() {
+    return localStorage.getItem('gh_pat') || '';
+  }
+
+  function promptToken() {
+    const existingToken = getToken();
+    const token = prompt("Inserisci il tuo Personal Access Token di GitHub:", existingToken);
+    if (token !== null) {
+      localStorage.setItem('gh_pat', token.trim());
+      updateStatus();
+      loadRecipesFromGitHub();
+    }
+  }
+
+  function updateStatus() {
+    const statusEl = document.getElementById('syncStatus');
+    if (getToken()) {
+      statusEl.innerHTML = '<span class="status-online">● Collegato a GitHub</span>';
+    } else {
+      statusEl.innerHTML = '<span class="status-offline">○ Token non impostato</span>';
+    }
+  }
+
+  function showLoading(show) {
+    document.getElementById('loading').style.display = show ? 'flex' : 'none';
+  }
+
+  function utf8_to_b64(str) {
+    return btoa(unescape(encodeURIComponent(str)));
+  }
+
+  function b64_to_utf8(str) {
+    return decodeURIComponent(escape(atob(str.replace(/\n/g, ''))));
+  }
+
+  async function loadRecipesFromGitHub() {
+    showLoading(true);
+    const token = getToken();
+    const headers = token ? { 'Authorization': `token ${token}` } : {};
+
+    try {
+      const response = await fetch(API_URL, { headers, cache: 'no-store' });
+      if (response.ok) {
+        const data = await response.json();
+        currentFileSha = data.sha;
+        const decodedContent = b64_to_utf8(data.content);
+        recipes = JSON.parse(decodedContent);
+      } else if (response.status === 404) {
+        recipes = [];
+        currentFileSha = null;
+      } else {
+        alert("Impossibile caricare da GitHub. Verifica il Token.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Errore di connessione a GitHub.");
+    } finally {
+      showLoading(false);
+      renderRecipes();
+      updateStatus();
+    }
+  }
+
+  async function saveToGitHub(commitMessage) {
+    const token = getToken();
+    if (!token) {
+      alert("Imposta il Token GitHub prima di salvare!");
+      promptToken();
+      if (!getToken()) return false;
+    }
+
+    showLoading(true);
+
+    try {
+      const getRes = await fetch(API_URL, {
+        headers: { 'Authorization': `token ${getToken()}` },
+        cache: 'no-store'
+      });
+      if (getRes.ok) {
+        const getData = await getRes.json();
+        currentFileSha = getData.sha;
+      }
+
+      const jsonString = JSON.stringify(recipes, null, 2);
+      const contentB64 = utf8_to_b64(jsonString);
+
+      const bodyData = {
+        message: commitMessage,
+        content: contentB64,
+        branch: 'main'
+      };
+      if (currentFileSha) {
+        bodyData.sha = currentFileSha;
+      }
+
+      const putRes = await fetch(API_URL, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `token ${getToken()}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(bodyData)
+      });
+
+      if (putRes.ok) {
+        const resData = await putRes.json();
+        currentFileSha = resData.content.sha;
+        showLoading(false);
+        return true;
+      } else {
+        const errorData = await putRes.json();
+        alert("Errore salvataggio GitHub: " + (errorData.message || 'Verifica il Token'));
+        showLoading(false);
+        return false;
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Errore di connessione durante il salvataggio.");
+      showLoading(false);
+      return false;
+    }
   }
 
   function renderRecipes() {
     const list = document.getElementById('recipeList');
     list.innerHTML = '';
+    if (recipes.length === 0) {
+      list.innerHTML = '<p style="text-align:center; color:#718096; margin-top:30px;">Nessuna ricetta su GitHub.<br>Clicca "+ Nuova" per creare la prima!</p>';
+      return;
+    }
     recipes.forEach((r, index) => {
       list.innerHTML += `
         <div class="card" onclick="viewRecipe(${index})">
@@ -156,7 +295,7 @@
     document.getElementById('viewModal').style.display = 'none';
   }
 
-  function saveRecipe(e) {
+  async function saveRecipe(e) {
     e.preventDefault();
     const id = document.getElementById('recipeId').value;
     const rawIngredients = document.getElementById('ingredients').value.split('\n').filter(i => i.trim() !== '');
@@ -179,14 +318,20 @@
       instructions: document.getElementById('instructions').value
     };
 
-    if (id !== '') {
+    const isEdit = (id !== '');
+    if (isEdit) {
       recipes[id] = newRecipe;
     } else {
       recipes.push(newRecipe);
     }
 
-    saveStorage();
-    closeModal();
+    const commitMsg = isEdit ? `Aggiornata ricetta: ${newRecipe.title}` : `Aggiunta ricetta: ${newRecipe.title}`;
+    const success = await saveToGitHub(commitMsg);
+
+    if (success) {
+      closeModal();
+      renderRecipes();
+    }
   }
 
   function viewRecipe(index) {
@@ -223,42 +368,20 @@
     });
   }
 
-  function deleteRecipe(index) {
+  async function deleteRecipe(index) {
     if (confirm('Vuoi davvero eliminare questa ricetta?')) {
+      const deletedTitle = recipes[index].title;
       recipes.splice(index, 1);
-      saveStorage();
-      closeViewModal();
+      const success = await saveToGitHub(`Eliminata ricetta: ${deletedTitle}`);
+      if (success) {
+        closeViewModal();
+        renderRecipes();
+      }
     }
   }
 
-  function exportData() {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(recipes));
-    const downloadAnchor = document.createElement('a');
-    downloadAnchor.setAttribute("href", dataStr);
-    downloadAnchor.setAttribute("download", "ricettario_backup.json");
-    document.body.appendChild(downloadAnchor);
-    downloadAnchor.click();
-    downloadAnchor.remove();
-  }
-
-  function importData(e) {
-    const fileReader = new FileReader();
-    fileReader.onload = function (event) {
-      try {
-        const importedRecipes = JSON.parse(event.target.result);
-        if (Array.isArray(importedRecipes)) {
-          recipes = importedRecipes;
-          saveStorage();
-          alert('Ricette importate con successo!');
-        }
-      } catch (err) {
-        alert('File non valido.');
-      }
-    };
-    fileReader.readAsText(e.target.files[0]);
-  }
-
-  renderRecipes();
+  updateStatus();
+  loadRecipesFromGitHub();
 </script>
 </body>
 </html>
