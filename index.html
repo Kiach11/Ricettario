@@ -97,8 +97,8 @@
       <label>Porzioni Base</label>
       <input type="number" id="baseServings" value="4" min="1" required>
 
-      <label>Ingredienti (uno per riga: Quantità | Unità | Nome)</label>
-      <textarea id="ingredients" rows="4" placeholder="200 | g | Farina&#10;2 | | Uova&#10;0.5 | g | Sale" required></textarea>
+      <label>Ingredienti (uno per riga: Quantità ; Unità ; Nome)</label>
+      <textarea id="ingredients" rows="4" placeholder="200 ; g ; Farina&#10;2 ; ; Uova&#10;0.5 ; g ; Sale" required></textarea>
 
       <label>Procedimento</label>
       <textarea id="instructions" rows="4" required></textarea>
@@ -243,12 +243,10 @@
     const selectedCategory = document.getElementById('filterCategory').value;
     list.innerHTML = '';
 
-    // Mantiene l'indice reale dell'array originale
     let filteredItems = recipes
       .map((recipe, index) => ({ recipe, index }))
       .filter(item => selectedCategory === 'ALL' || item.recipe.category === selectedCategory);
 
-    // Ordinamento alfabetico basato sul titolo della ricetta
     filteredItems.sort((a, b) => a.recipe.title.localeCompare(b.recipe.title, 'it', { sensitivity: 'base' }));
 
     if (filteredItems.length === 0) {
@@ -351,8 +349,9 @@
     const id = document.getElementById('recipeId').value;
     const rawIngredients = document.getElementById('ingredients').value.split('\n').filter(i => i.trim() !== '');
     
+    // Separatore impostato su ;
     const parsedIngredients = rawIngredients.map(line => {
-      const parts = line.split('|').map(p => p.trim());
+      const parts = line.split(';').map(p => p.trim());
       return {
         qty: parseFloat(parts[0]) || 0,
         unit: parts[1] || '',
@@ -419,8 +418,9 @@
     document.getElementById('link').value = recipe.link || '';
     document.getElementById('baseServings').value = recipe.baseServings;
 
+    // Formatta la lista ingredienti usando ;
     const ingText = recipe.ingredients
-      .map(i => `${i.qty} | ${i.unit} | ${i.name}`)
+      .map(i => `${i.qty} ; ${i.unit} ; ${i.name}`)
       .join('\n');
     document.getElementById('ingredients').value = ingText;
 
