@@ -1,0 +1,41 @@
+[
+  {
+    "title": "Maionese Veg",
+    "category": "Salse/Condimenti",
+    "link": "",
+    "baseServings": 1,
+    "ingredients": [
+      {
+        "qty": 60,
+        "unit": "g",
+        "name": "Latte Soia senza zucchero"
+      },
+      {
+        "qty": 100,
+        "unit": "g",
+        "name": "Olio di semi (meglio di mais)"
+      },
+      {
+        "qty": 10,
+        "unit": "g",
+        "name": "Olio d'oliva"
+      },
+      {
+        "qty": 0.5,
+        "unit": "cucchiaiano/i",
+        "name": "Sale"
+      },
+      {
+        "qty": 1,
+        "unit": "cucchiaiano/i",
+        "name": "Succo limone"
+      },
+      {
+        "qty": 1,
+        "unit": "cucchiaiano/i",
+        "name": "Curry"
+      }
+    ],
+    "instructions": "Metti prima il latte, poi olio di semi e olio d'oliva, infine sale, succo di limone e curry nel barattolo del frullatore a immersione, poi frulla tutto. \nNB.: inizia stando in fondo e piano piano incorpora l'olio"
+  }
+]
