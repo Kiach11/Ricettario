@@ -281,5 +281,59 @@
       }
     ],
     "instructions": "Per attivare il lievito, metti in una ciotola 40g di acqua e lo zucchero e mescolare\nIn un’altra ciotola, unire le farine, il lievito attivato, il rosmarino tritato, sale e il resto dell’acqua (60g) → impasta con un cucchiaio e aggiungi l’olio\nImpastate energicamente con le mani per 5 minuti e fate lievitare l’impasto nella ciotola per almeno 2h in un luogo caldo e asciutto (coperto da un canovaccio nel forno con luce accesa)\nDividere l’impasto in palline e mettile su una teglia con carta da forno (usa cucchiaio per dare forma), fare delle piccole pressioni col dito e condite con altro rosmarino tritato e qualche chicco di sale grosso\nCuocere in forno statico per 220° per 10 minuti"
+  },
+  {
+    "title": "Burger di fagioli",
+    "category": "Primi piatti",
+    "link": "https://blog.giallozafferano.it/studentiaifornelli/burger-di-fagioli/",
+    "baseServings": 4,
+    "ingredients": [
+      {
+        "qty": 250,
+        "unit": "g",
+        "name": "Fagioli (borlotti o rossi)"
+      },
+      {
+        "qty": 1,
+        "unit": "",
+        "name": "Carota/e"
+      },
+      {
+        "qty": 0.5,
+        "unit": "",
+        "name": "Cipolla/e rossa/e"
+      },
+      {
+        "qty": 30,
+        "unit": "g",
+        "name": "Pan grattato"
+      },
+      {
+        "qty": 0,
+        "unit": "",
+        "name": "Prezzemolo"
+      },
+      {
+        "qty": 0,
+        "unit": "",
+        "name": "Sale"
+      },
+      {
+        "qty": 0,
+        "unit": "",
+        "name": "Spezie a piecere"
+      },
+      {
+        "qty": 0,
+        "unit": "",
+        "name": "Olio d'oliva"
+      },
+      {
+        "qty": 0,
+        "unit": "",
+        "name": "Semi di lino (per sostituto uovo)"
+      }
+    ],
+    "instructions": "Schiaccia i fagioli (se non possibile frulla ma non devono diventare una pappa) dopo averli lavati e scolati bene\nIn una seconda frullata frulla cipolla, carote, pan grattato e spezie a piacere. \nMetti i 2 composti insieme e mischia. Aggiungere il sostituto dell'uovo e mescolare bene. Formare palline e cuocere in padella."
   }
 ]
