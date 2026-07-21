@@ -627,5 +627,49 @@
       }
     ],
     "instructions": "-"
+  },
+  {
+    "title": "Cotolette veg",
+    "category": "Primi piatti",
+    "link": "https://www.instagram.com/reel/DXqnM6kiDnJ/",
+    "baseServings": 3,
+    "ingredients": [
+      {
+        "qty": 200,
+        "unit": "g",
+        "name": "Acqua"
+      },
+      {
+        "qty": 1,
+        "unit": "cucchiaio/i",
+        "name": "Olio"
+      },
+      {
+        "qty": 50,
+        "unit": "g",
+        "name": "Farina d'avena"
+      },
+      {
+        "qty": 80,
+        "unit": "g",
+        "name": "Farina di ceci"
+      },
+      {
+        "qty": 0,
+        "unit": "",
+        "name": "Sale"
+      },
+      {
+        "qty": 0,
+        "unit": "",
+        "name": "Spezie"
+      },
+      {
+        "qty": 0,
+        "unit": "",
+        "name": "Pan grattato (per impanare)"
+      }
+    ],
+    "instructions": "Simile a Cotolette/Straccetti"
   }
 ]
