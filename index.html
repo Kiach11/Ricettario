@@ -216,7 +216,7 @@
   }
 
   function updateCategoryUI() {
-    const categories = [...new Set(recipes.map(r => r.category ? r.category.trim() : '').filter(Boolean))].sort();
+    const categories = [...new Set(recipes.map(r => r.category ? r.category.trim() : '').filter(Boolean))].sort((a, b) => a.localeCompare(b, 'it', { sensitivity: 'base' }));
 
     const datalist = document.getElementById('categorySuggestions');
     datalist.innerHTML = '';
@@ -243,9 +243,13 @@
     const selectedCategory = document.getElementById('filterCategory').value;
     list.innerHTML = '';
 
-    const filteredItems = recipes
+    // Mantiene l'indice reale dell'array originale
+    let filteredItems = recipes
       .map((recipe, index) => ({ recipe, index }))
       .filter(item => selectedCategory === 'ALL' || item.recipe.category === selectedCategory);
+
+    // Ordinamento alfabetico basato sul titolo della ricetta
+    filteredItems.sort((a, b) => a.recipe.title.localeCompare(b.recipe.title, 'it', { sensitivity: 'base' }));
 
     if (filteredItems.length === 0) {
       list.innerHTML = '<p style="text-align:center; color:#718096; margin-top:30px;">Nessuna ricetta trovata.</p>';
