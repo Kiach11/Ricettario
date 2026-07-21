@@ -593,5 +593,39 @@
       }
     ],
     "instructions": "-"
+  },
+  {
+    "title": "Tonno veg",
+    "category": "Primi piatti",
+    "link": "https://www.instagram.com/reel/DTLTBw8DKys/",
+    "baseServings": 1,
+    "ingredients": [
+      {
+        "qty": 1,
+        "unit": "",
+        "name": "Barattolo/i di ceci"
+      },
+      {
+        "qty": 1,
+        "unit": "",
+        "name": "Foglio/i alga nori"
+      },
+      {
+        "qty": 1,
+        "unit": "cucchiaio/i",
+        "name": "di capperi"
+      },
+      {
+        "qty": 0,
+        "unit": "",
+        "name": "Succo di limone"
+      },
+      {
+        "qty": 0,
+        "unit": "",
+        "name": "Mayo veg"
+      }
+    ],
+    "instructions": "-"
   }
 ]
