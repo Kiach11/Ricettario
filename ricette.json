@@ -671,5 +671,49 @@
       }
     ],
     "instructions": "Simile a Cotolette/Straccetti"
+  },
+  {
+    "title": "Frittelle di ceci con zucchine",
+    "category": "Primi piatti",
+    "link": "https://www.ioscelgoveg.it/ricette/frittelle-vegan-ceci-zucchine/",
+    "baseServings": 10,
+    "ingredients": [
+      {
+        "qty": 130,
+        "unit": "g",
+        "name": "Farina di ceci"
+      },
+      {
+        "qty": 180,
+        "unit": "g",
+        "name": "Acqua"
+      },
+      {
+        "qty": 2,
+        "unit": "",
+        "name": "Zucchine medio-grandi"
+      },
+      {
+        "qty": 6,
+        "unit": "",
+        "name": "Foglie di basilico o maggiorana"
+      },
+      {
+        "qty": 1,
+        "unit": "cucchiaio/i",
+        "name": "Olio"
+      },
+      {
+        "qty": 0,
+        "unit": "",
+        "name": "Sale"
+      },
+      {
+        "qty": 0,
+        "unit": "",
+        "name": "Pepe"
+      }
+    ],
+    "instructions": "In una ciotola amalgama la farina di ceci e l'acqua fino a formare una pastella bella densa.\nCon una grattugia a fori larghi, grattugia le zucchine. Una volta pronte, uniscile alla pastella.\nScalda un filo d'olio in una padella antiaderente. Mentre attendi che si scaldi, unisci il basilico spezzettato (o la maggiorana) alla pastella e mescola bene. Per finire, aggiusta di sale e pepe.\nQuando la padella sarà ben calda, distribuisci il composto di ceci e zucchine a grosse cucchiaiate. La dimensione sarà tipo quella dei pancake. Lascia cuocere due minuti a fuoco medio, gira le frittelle ben dorate e cuocile due minuti dall'altro lato. Continua fino a quando non avrai terminato l'impasto.\n\nSi può aggiungere anche altro oltre alle zucchine ma regolare quantità."
   }
 ]
