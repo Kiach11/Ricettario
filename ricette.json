@@ -476,5 +476,54 @@
       }
     ],
     "instructions": "Frullare le lenticchie, unire la farina di ceci, la senape.\nAiutandosi con il pane grattugiato formare delle palline.\nIn una padella mettere abbondante olio e cuocere le polpette fino a quando non sono ben rosolate da tutte le parti."
+  },
+  {
+    "title": "Guacamole",
+    "category": "Salse/Condimenti",
+    "link": "https://ricette.giallozafferano.it/Guacamole.html",
+    "baseServings": 2,
+    "ingredients": [
+      {
+        "qty": 1,
+        "unit": "",
+        "name": "Avocado"
+      },
+      {
+        "qty": 0.5,
+        "unit": "",
+        "name": "Cipolla bianca"
+      },
+      {
+        "qty": 40,
+        "unit": "g",
+        "name": "succo di lime"
+      },
+      {
+        "qty": 100,
+        "unit": "g",
+        "name": "Pomodorini a pezzetti"
+      },
+      {
+        "qty": 5,
+        "unit": "g",
+        "name": "Sale"
+      },
+      {
+        "qty": 0.5,
+        "unit": "",
+        "name": "Aglio"
+      },
+      {
+        "qty": 0,
+        "unit": "",
+        "name": "Prezzemolo"
+      },
+      {
+        "qty": 0,
+        "unit": "",
+        "name": "Pepe"
+      }
+    ],
+    "instructions": "-"
   }
 ]
