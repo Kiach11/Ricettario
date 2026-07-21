@@ -21,7 +21,7 @@
     header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
     h1 { font-size: 1.5rem; margin: 0; color: var(--primary); }
 
-    .top-actions { display: flex; gap: 8px; margin-bottom: 15px; }
+    .top-actions { display: flex; gap: 8px; margin-bottom: 15px; justify-content: space-between; align-items: center; }
     .btn { background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; }
     .btn-secondary { background: #718096; }
     .btn-danger { background: #e53e3e; }
@@ -30,6 +30,9 @@
     .status-bar { background: #e2e8f0; padding: 8px 12px; border-radius: 8px; font-size: 0.85rem; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
     .status-online { color: #2f855a; font-weight: bold; }
     .status-offline { color: #c53030; font-weight: bold; }
+
+    .filter-bar { background: var(--card-bg); padding: 10px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+    .filter-bar label { font-size: 0.85rem; font-weight: bold; color: #4a5568; }
 
     .card { background: var(--card-bg); border-radius: 12px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid var(--border); cursor: pointer; }
     .card-header { display: flex; justify-content: space-between; align-items: center; }
@@ -64,6 +67,14 @@
     <button class="btn btn-secondary btn-sm" onclick="loadRecipesFromGitHub()">🔄 Ricarica da Git</button>
   </div>
 
+  <!-- Filtro Categoria -->
+  <div class="filter-bar">
+    <label for="filterCategory">📁 Categoria:</label>
+    <select id="filterCategory" style="margin: 0;" onchange="renderRecipes()">
+      <option value="ALL">Tutte le categorie</option>
+    </select>
+  </div>
+
   <div id="recipeList"></div>
 </div>
 
@@ -78,7 +89,9 @@
       <input type="text" id="title" required>
 
       <label>Categoria</label>
-      <input type="text" id="category" placeholder="es. Primi, Dolci, Vegetariano" required>
+      <!-- Datalist per i suggerimenti automatici -->
+      <input type="text" id="category" list="categorySuggestions" placeholder="es. Primi, Dolci, Vegetariano" required autocomplete="off">
+      <datalist id="categorySuggestions"></datalist>
 
       <label>Link Origine (Opzionale)</label>
       <input type="url" id="link" placeholder="https://...">
@@ -195,9 +208,67 @@
       alert("Errore di connessione a GitHub.");
     } finally {
       showLoading(false);
+      updateCategoryUI();
       renderRecipes();
       updateStatus();
     }
+  }
+
+  function updateCategoryUI() {
+    // Estrae tutte le categorie uniche e le ordina alfabeticamente
+    const categories = [...new Set(recipes.map(r => r.category ? r.category.trim() : '').filter(Boolean))].sort();
+
+    // 1. Aggiorna i suggerimenti nel form di inserimento
+    const datalist = document.getElementById('categorySuggestions');
+    datalist.innerHTML = '';
+    categories.forEach(cat => {
+      datalist.innerHTML += `<option value="${cat}">`;
+    });
+
+    // 2. Aggiorna il filtro in alto
+    const filterSelect = document.getElementById('filterCategory');
+    const currentValue = filterSelect.value;
+    filterSelect.innerHTML = '<option value="ALL">Tutte le categorie</option>';
+    categories.forEach(cat => {
+      filterSelect.innerHTML += `<option value="${cat}">${cat}</option>`;
+    });
+
+    // Mantiene la selezione se esiste ancora
+    if (categories.includes(currentValue)) {
+      filterSelect.value = currentValue;
+    } else {
+      filterSelect.value = 'ALL';
+    }
+  }
+
+  function renderRecipes() {
+    const list = document.getElementById('recipeList');
+    const selectedCategory = document.getElementById('filterCategory').value;
+    list.innerHTML = '';
+
+    // Mantiene l'indice originale anche se la lista viene filtrata
+    const filteredItems = recipes
+      .map((recipe, index) => ({ recipe, index }))
+      .filter(item => selectedCategory === 'ALL' || item.recipe.category === selectedCategory);
+
+    if (filteredItems.length === 0) {
+      list.innerHTML = '<p style="text-align:center; color:#718096; margin-top:30px;">Nessuna ricetta trovata.</p>';
+      return;
+    }
+
+    filteredItems.forEach(item => {
+      const r = item.recipe;
+      const i = item.index;
+      list.innerHTML += `
+        <div class="card" onclick="viewRecipe(${i})">
+          <div class="card-header">
+            <strong>${r.title}</strong>
+            <span class="tag">${r.category}</span>
+          </div>
+          <small style="color:#718096; display:block; margin-top:5px;">Porzioni base: ${r.baseServings}</small>
+        </div>
+      `;
+    });
   }
 
   async function saveToGitHub(commitMessage) {
@@ -260,26 +331,6 @@
     }
   }
 
-  function renderRecipes() {
-    const list = document.getElementById('recipeList');
-    list.innerHTML = '';
-    if (recipes.length === 0) {
-      list.innerHTML = '<p style="text-align:center; color:#718096; margin-top:30px;">Nessuna ricetta su GitHub.<br>Clicca "+ Nuova" per creare la prima!</p>';
-      return;
-    }
-    recipes.forEach((r, index) => {
-      list.innerHTML += `
-        <div class="card" onclick="viewRecipe(${index})">
-          <div class="card-header">
-            <strong>${r.title}</strong>
-            <span class="tag">${r.category}</span>
-          </div>
-          <small style="color:#718096; display:block; margin-top:5px;">Porzioni base: ${r.baseServings}</small>
-        </div>
-      `;
-    });
-  }
-
   function openModal() {
     document.getElementById('recipeForm').reset();
     document.getElementById('recipeId').value = '';
@@ -330,6 +381,7 @@
 
     if (success) {
       closeModal();
+      updateCategoryUI();
       renderRecipes();
     }
   }
@@ -375,6 +427,7 @@
       const success = await saveToGitHub(`Eliminata ricetta: ${deletedTitle}`);
       if (success) {
         closeViewModal();
+        updateCategoryUI();
         renderRecipes();
       }
     }
