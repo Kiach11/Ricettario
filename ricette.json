@@ -335,5 +335,24 @@
       }
     ],
     "instructions": "Schiaccia i fagioli (se non possibile frulla ma non devono diventare una pappa) dopo averli lavati e scolati bene\nIn una seconda frullata frulla cipolla, carote, pan grattato e spezie a piacere. \nMetti i 2 composti insieme e mischia. Aggiungere il sostituto dell'uovo e mescolare bene. Formare palline e cuocere in padella."
+  },
+  {
+    "title": "Sostituto per uovo",
+    "category": "Altro",
+    "link": "",
+    "baseServings": 2,
+    "ingredients": [
+      {
+        "qty": 20,
+        "unit": "g",
+        "name": "Semi di lino / Semi di chia (già macinati)"
+      },
+      {
+        "qty": 60,
+        "unit": "g",
+        "name": "Acqua"
+      }
+    ],
+    "instructions": "Mescolare e lasciare riposare per almeno 15 minuti"
   }
 ]
